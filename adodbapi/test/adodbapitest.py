@@ -1,5 +1,7 @@
 """ Unit tests version 2.6.0.6 for adodbapi"""
 from __future__ import with_statement
+import math
+
 # when Python 2.5 is retired, change that to: from __future__ import print_function
 """
     adodbapi - A python DB API 2.0 interface to Microsoft ADO
@@ -1186,7 +1188,7 @@ class TimeConverterInterfaceTest(unittest.TestCase):
         d=self.tc.Date(1994,11,15)
         comDate=self.tc.COMDate(d)
         correct=34653.0
-        assert comDate == correct,comDate
+        assert math.isclose(comDate, correct, rel_tol=1e-09, abs_tol=0.0),comDate
         
     def testExactTimestamp(self):
         d=self.tc.Timestamp(1994,11,15,12,0,0)
