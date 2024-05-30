@@ -13,7 +13,7 @@ def main():
     output = sys.argv[2]
     input = open(file, "r")
     out = open(output, "w")
-    line = input.readline()
+    line = input.readline(5_000_000)
     out.write("""
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <HTML>
@@ -40,7 +40,7 @@ def main():
         <param name="Local" value="%s.html">
         </OBJECT>
 """ % (keyword, fields[1], context))
-        line = input.readline()
+        line = input.readline(5_000_000)
     out.write("""
 </UL>
 </BODY></HTML>
