@@ -277,27 +277,26 @@ class DirectSoundTest(unittest.TestCase):
                 break
         else:
             raise TestSkipped("Can't find test .wav file to play")
+        with open(fname, 'rb') as f:
+            hdr = f.read(WAV_HEADER_SIZE)
+            wfx, size = wav_header_unpack(hdr)
 
-        f = open(fname, 'rb')
-        hdr = f.read(WAV_HEADER_SIZE)
-        wfx, size = wav_header_unpack(hdr)
+            d = ds.DirectSoundCreate(None, None)
+            d.SetCooperativeLevel(None, ds.DSSCL_PRIORITY)
 
-        d = ds.DirectSoundCreate(None, None)
-        d.SetCooperativeLevel(None, ds.DSSCL_PRIORITY)
+            sdesc = ds.DSBUFFERDESC()
+            sdesc.dwFlags = ds.DSBCAPS_STICKYFOCUS | ds.DSBCAPS_CTRLPOSITIONNOTIFY
+            sdesc.dwBufferBytes = size
+            sdesc.lpwfxFormat = wfx
 
-        sdesc = ds.DSBUFFERDESC()
-        sdesc.dwFlags = ds.DSBCAPS_STICKYFOCUS | ds.DSBCAPS_CTRLPOSITIONNOTIFY
-        sdesc.dwBufferBytes = size
-        sdesc.lpwfxFormat = wfx
+            buffer = d.CreateSoundBuffer(sdesc, None)
 
-        buffer = d.CreateSoundBuffer(sdesc, None)
+            event = win32event.CreateEvent(None, 0, 0, None)
+            notify = buffer.QueryInterface(ds.IID_IDirectSoundNotify)
 
-        event = win32event.CreateEvent(None, 0, 0, None)
-        notify = buffer.QueryInterface(ds.IID_IDirectSoundNotify)
+            notify.SetNotificationPositions((ds.DSBPN_OFFSETSTOP, event))
 
-        notify.SetNotificationPositions((ds.DSBPN_OFFSETSTOP, event))
-
-        buffer.Update(0, f.read(size))
+            buffer.Update(0, f.read(size))
 
         buffer.Play(0)
 
