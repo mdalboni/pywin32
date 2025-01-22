@@ -13,10 +13,11 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 import platform
 import sys
-import random
 
 import is64bit
 import setuptestframework
+import secrets
+
 if sys.version_info >= (3,0):
     import tryconnection3 as tryconnection
 else:
@@ -34,7 +35,7 @@ except:
 
 # create a random name for temporary table names
 _alphabet = "PYFGCRLAOEUIDHTNTQJKXBMWVZ1234567890" # yes, I do use a dvorak keyboard!
-tmp = ''.join([random.choice(_alphabet) for x in range(9)])
+tmp = ''.join([secrets.choice(_alphabet) for x in range(9)])
 mdb_name = 'xx_' + tmp + '.mdb'
 testfolder = setuptestframework.maketemp()
 
